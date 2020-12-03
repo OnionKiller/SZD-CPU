@@ -2,7 +2,7 @@
 // rejection samlpling method implementad based on: https://ieeexplore.ieee.org/document/4925834
 
 #include "../modell_factory.h"
-#include "../data.h"
+#include "../../Data/data.h"
 #include <vector>
 
 struct simulation_params

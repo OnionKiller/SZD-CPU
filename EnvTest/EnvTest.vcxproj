@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Data\modell_factory.cpp" />
-    <ClCompile Include="src\Data\rejection_sampling\impl.cpp" />
     <ClCompile Include="src\EnvTest.cpp" />
+    <ClCompile Include="src\Modell\modell_factory.cpp" />
+    <ClCompile Include="src\Modell\rejection_sampling\impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -29,10 +29,11 @@
   <ItemGroup>
     <ClInclude Include="src\Data\accepted_tags.h" />
     <ClInclude Include="src\Data\data.h" />
-    <ClInclude Include="src\Data\function_param.h" />
-    <ClInclude Include="src\Data\likelihood.h" />
-    <ClInclude Include="src\Data\modell_factory.h" />
-    <ClInclude Include="src\Data\rejection_sampling\impl.h" />
+    <ClInclude Include="src\Data\init_data.h" />
+    <ClInclude Include="src\Modell\function_param.h" />
+    <ClInclude Include="src\Modell\likelihood.h" />
+    <ClInclude Include="src\Modell\modell_factory.h" />
+    <ClInclude Include="src\Modell\rejection_sampling\impl.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
