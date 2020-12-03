@@ -101,6 +101,9 @@ public:
 	const_iterator end() const {
 		return failure_list_.end();
 	};
+	const bool empty() {
+		return failure_list_.empty();
+	}
 	double const Sum(const size_t i = -1) {
 		auto end = failure_list_.cbegin() + i;
 		if (i < 0)
