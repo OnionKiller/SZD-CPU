@@ -11,7 +11,7 @@
 class imperfect_virtualage_likelihood : public likelihood
 {
 public:
-	virtual void add_data(simple_failure_times failure_list);
+	virtual void set_data(simple_failure_times failure_list);
 	//calculate likelihood
 	virtual double get_likelihood() override;
 	/*set parameter limits to initialise

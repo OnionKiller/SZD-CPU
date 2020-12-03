@@ -2,13 +2,14 @@
 #include <iostream>
 #include <cmath>
 
-void imperfect_virtualage_likelihood::add_data(simple_failure_times failure_list)
+void imperfect_virtualage_likelihood::set_data(simple_failure_times failure_list)
 {
 	simple_failure_times filtered;
 	for (auto&& I : failure_list.get_failure_list())
 	{
 		if (I.has_tag(tags::Complete) && \
-			(I.has_tag(tags::Preventive) ^ I.has_tag(tags::Repair))) {
+			(I.has_tag(tags::Preventive) ^ I.has_tag(tags::Repair))) 
+		{
 			filtered.add_failure(I);
 		}
 		else
@@ -47,12 +48,13 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	//agregate
 	//fist part
 	auto Vi_save = Vi_1px_list;
-	auto pi = std::transform_reduce(std::execution::par, Vi_1px_list.begin(), Vi_1px_list.end(),double(0), [](double a, double b) {return a * b; }, [this](Vi& A) {
+	auto pi = std::transform_reduce(std::execution::par, Vi_1px_list.begin(), Vi_1px_list.end(),double(0), std::multiplies<>(), [this](Vi& A) {
 		if (!A.is_repair)
-			return 1;
+			return 1.;
 		auto value = std::powl(A.value, (Cbeta - 1)) * Cbeta / (std::powl(Ceta, Cbeta));
+		return double(value);
 		});
-	auto sum = std::transform_reduce(std::execution::par, Vi_save.begin(), Vi_save.end(), Vi_list.begin(), double(0), [](double a, double b) {return a + b; }, [this](Vi& Vix, Vi& Vi) {
+	auto sum = std::transform_reduce(std::execution::par, Vi_save.begin(), Vi_save.end(), Vi_list.begin(), double(0), std::plus<>(), [this](Vi& Vix, Vi& Vi) {
 		return std::powl(Vi.value, Cbeta) - std::powl(Vix.value, Cbeta);
 		});
 	auto result = pi * std::expl(1. / std::powl(Ceta, Cbeta) * sum);
@@ -109,8 +111,8 @@ double imperfect_virtualage_likelihood::Vi_1(size_t i)
 	auto end = failure_list_.begin() + i-1;
 	if (i < 0)
 		throw std::exception("Bad index");
-	auto r = std::transform_reduce(std::execution::par, failure_list_.begin(), end, double(0.), \
-		[](double a, double b)->double {return a + b; }, [this](simple_failure A) {
+	auto r = std::transform_reduce(std::execution::par, failure_list_.begin(), end, double(0.), 
+		std::plus<>(), [this](simple_failure A) {
 			if(A.has_tag(tags::Repair))
 				return A.get_failure_time()*Cap; 
 			else
