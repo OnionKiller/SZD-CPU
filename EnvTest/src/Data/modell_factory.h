@@ -29,6 +29,7 @@ protected:
 	function_param<double>* ap = nullptr;
 	double Cbeta = 0, Ceta = 0, Car = 0, Cap = 0;
 	bool init = false;
+	const inline bool check_init_();
 	const inline void init_random_();
 	double Vi_1(size_t i);
 };

@@ -21,7 +21,7 @@ void imperfect_virtualage_likelihood::add_data(simple_failure_times failure_list
 
 double imperfect_virtualage_likelihood::get_likelihood()
 {
-	if (!init)
+	if (!check_init_())
 		throw std::exception("likelihood isn't initialised, add param borders");
 	//implement https://ieeexplore.ieee.org/document/4925834
 	init_random_();
@@ -82,6 +82,11 @@ imperfect_virtualage_likelihood::~imperfect_virtualage_likelihood()
 		delete ar;
 	if (this->ap != nullptr)
 		delete ap;
+}
+
+inline const bool imperfect_virtualage_likelihood::check_init_()
+{
+	return init && !failure_list_.empty();
 }
 
 inline const void imperfect_virtualage_likelihood::init_random_()
