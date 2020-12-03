@@ -6,8 +6,6 @@
 #include "Modell/modell_factory.h"
 #include "Data/init_data.h"
 
-simple_failure_times init_failure_datas() { return simple_failure_times(); };
-
 
 
 int main()
@@ -20,7 +18,7 @@ int main()
     rejection_sampler solver;
     solver.setModell(modell);
     solver.setData(failures);
-    params.sample_size = 100000;
+    params.sample_size = 100;
     auto result = solver.solve(params);
     std::cout << "Done!\n";
     std::cout << "Estimeted params are: \nBeta : " << result[0] << "\nEta  : " << result[1] << "\nAr   : " << result[2] << "\nAp   : " << result[3] << std::endl;

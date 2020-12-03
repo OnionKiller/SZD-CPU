@@ -30,6 +30,7 @@
     <ClInclude Include="src\Data\accepted_tags.h" />
     <ClInclude Include="src\Data\data.h" />
     <ClInclude Include="src\Data\init_data.h" />
+    <ClInclude Include="src\Data\raw_data.h" />
     <ClInclude Include="src\Modell\function_param.h" />
     <ClInclude Include="src\Modell\likelihood.h" />
     <ClInclude Include="src\Modell\modell_factory.h" />
