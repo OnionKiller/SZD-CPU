@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <algorithm>
 #include <numeric>
 #include <execution>
 #include "accepted_tags.h"
@@ -71,7 +72,7 @@ class simple_failure : public tagged_failure
 {
 public:
 	simple_failure() = delete;
-	simple_failure(double failure_time) :failure_time(failure_time) {};
+	simple_failure(double failure_time) :failure_time(failure_time) { add_tag(tags::Complete); };
 	virtual double get_failure_time() {
 		return failure_time;
 	};
