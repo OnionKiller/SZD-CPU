@@ -2,6 +2,24 @@
 #include <iostream>
 #include <cmath>
 
+imperfect_virtualage_likelihood::imperfect_virtualage_likelihood(imperfect_virtualage_likelihood& C)
+{
+	if (C.beta != nullptr)
+		beta = C.beta;
+	if (C.eta != nullptr)
+		eta = C.eta;
+	if (C.ar != nullptr)
+		ar = C.ar;
+	if (C.ap != nullptr)
+		ap = C.ap;
+	failure_list_ = C.failure_list_;
+	Cbeta = C.Cbeta;
+	Ceta = C.Ceta;
+	Car = C.Car;
+	Cap = C.Cap;
+	init = C.init;
+}
+
 void imperfect_virtualage_likelihood::set_data(simple_failure_times failure_list)
 {
 	simple_failure_times filtered;
@@ -14,10 +32,10 @@ void imperfect_virtualage_likelihood::set_data(simple_failure_times failure_list
 		}
 		else
 		{
-			std::cout << "Data dropped: " << I.print() << std::endl;
+			std::cout << "Data dropped: " << I.print();
 		}
 	}
-	failure_list = filtered;
+	this->failure_list_ = filtered;
 }
 
 double imperfect_virtualage_likelihood::get_likelihood()
@@ -96,11 +114,11 @@ inline const void imperfect_virtualage_likelihood::init_random_()
 	//*cry emoji*😢
 	last_values_[0]  = beta->get_random_variable();
 	Cbeta = last_values_[0];
-	last_values_[1] = Ceta = eta->get_random_variable();
+	last_values_[1] = eta->get_random_variable();
 	Ceta = last_values_[1];
-	last_values_[2] = Car =  ar->get_random_variable();
+	last_values_[2] = ar->get_random_variable();
 	Car = last_values_[2];
-	last_values_[3] = Cap = ap->get_random_variable();
+	last_values_[3] = ap->get_random_variable();
 	Cap = last_values_[3];
 	return void();
 }
