@@ -134,7 +134,8 @@ namespace modell_test {
 		auto I = function_param<int>(0, 1);
 		auto v = I.get_random_variable();
 		ASSERT_TRUE(0 <= v && v < 1) << "Bad value: " << v;
-	}TEST(function_param, generated)
+	}
+	TEST(function_param, generated)
 	{
 		auto I = function_param<double>(0., 1.);
 		auto v = I.get_random_variable();
