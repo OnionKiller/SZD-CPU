@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "../EnvTest/src/Data/data.h"
-#include "../EnvTest/src/Data/modell_factory.h"
-#include "../EnvTest/src/Data/rejection_sampling/impl.h"
+#include "../EnvTest/src/Modell/modell_factory.h"
+#include "../EnvTest/src/Modell/rejection_sampling/impl.h"
 
 
 //time assertion (https://github.com/google/googletest/issues/348#issuecomment-492810513)
