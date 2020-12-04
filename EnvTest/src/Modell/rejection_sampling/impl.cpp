@@ -1,22 +1,26 @@
-#include "../modell_factory.h"
+#pragma once
 #include "impl.h"
+#include "../modell_factory.h"
 #include <algorithm>
 #include <execution>
 #include <random>
 #include <functional>
 #include <ranges>
 
-void rejection_sampler::setData(simple_failure_times ftimes)
+template< class modellType>
+void rejection_sampler< modellType>::setData(simple_failure_times ftimes)
 {
 	this->failures_ = ftimes;
 }
 
-void rejection_sampler::setModell(imperfect_virtualage_likelihood modell)
+template< class modellType>
+void rejection_sampler< modellType>::setModell(modellType modell)
 {
-	this->L_ = modell;
+	this->L_ = modellType(modell);
 }
 
-std::vector<double> rejection_sampler::solve(simulation_params param)
+template<class modellType>
+std::vector<double> rejection_sampler<modellType>::solve(simulation_params param)
 {
 	std::default_random_engine gen;
 	auto U = std::bind(std::uniform_real_distribution(0., 1.),gen);
@@ -45,12 +49,14 @@ std::vector<double> rejection_sampler::solve(simulation_params param)
 	return result;
 }
 
-std::vector<sample_result> rejection_sampler::get_raw_result()
+template<class modellType>
+std::vector<sample_result> rejection_sampler<modellType>::get_raw_result()
 {
 	return raw_result_;
 }
 
-std::vector<double> rejection_sampler::estimate_result_()
+template<class modellType>
+std::vector<double> rejection_sampler< modellType>::estimate_result_()
 {
 	if (raw_result_.empty())
 		throw std::exception("Internal error: raw_result is empty.");
@@ -74,7 +80,8 @@ std::vector<double> rejection_sampler::estimate_result_()
 	return avg;
 }
 
-void rejection_sampler::oversample(const unsigned int rate)
+template<class modellType>
+void rejection_sampler<modellType>::oversample(const unsigned int rate)
 {
 	for (auto outer_incrementer =  raw_result_.size()-1;outer_incrementer --> 0;)
 	{

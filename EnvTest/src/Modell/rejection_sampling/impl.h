@@ -17,18 +17,20 @@ struct sample_result {
 };
 
 //interface to rejection sampler
+template <class modellType>
 class rejection_sampler
 {
 public:
 	void setData(simple_failure_times ftimes);
-	void setModell(imperfect_virtualage_likelihood modell);
+	void setModell(modellType modell);
 	std::vector<double> solve(simulation_params params); 
 	std::vector<sample_result> get_raw_result();
 protected:
 	simple_failure_times failures_;
-	imperfect_virtualage_likelihood L_;
+	modellType L_;
 	//implement modell here
 	std::vector<sample_result> raw_result_;
 	std::vector<double> estimate_result_();
 	void oversample(const unsigned int rate);
 };
+//#include "impl.cpp"
