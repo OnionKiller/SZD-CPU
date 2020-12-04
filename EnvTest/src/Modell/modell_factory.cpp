@@ -58,8 +58,12 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	auto sum = std::transform_reduce(std::execution::par, Vi_save.begin(), Vi_save.end(), Vi_list.begin(), (long double)0, std::plus<>(), [this](Vi& Vix, Vi& Vi)->long double {
 		return std::powl(Vi.value, Cbeta) - std::powl(Vix.value, Cbeta);
 		});
+
+#ifdef _DEBUG
 	//debug print
 	std::cout << pi << "(pi) -- " << sum << "(sum)" << std::endl;
+#endif // _DEBUG
+
 	auto result = pi * std::expl(1. / std::powl(Ceta, Cbeta) * sum);
 	return result;
 }
