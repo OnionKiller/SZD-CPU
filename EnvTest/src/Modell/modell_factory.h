@@ -15,8 +15,20 @@ public:
 	imperfect_virtualage_likelihood() = default;
 	imperfect_virtualage_likelihood(imperfect_virtualage_likelihood&) = default;
 	virtual void set_data(simple_failure_times failure_list);
-	//calculate likelihood
+	/*calculate likelihood
+	* not thread safe way to calculate likelihood
+	* */
 	virtual double get_likelihood() override;
+	/*calculate likelihood in a thread safe fashion
+	* helper return type
+	*/
+	struct th_likelihood{
+		long double L = 0;
+		double params[4];
+	};
+	/*calculate likelihood in a thread safe fashion
+	*/
+	virtual th_likelihood get_likelihood_th_safe();
 	/*set parameter limits to initialise
 	* lower limit first, higher limit second all time, 
 	* beta-eta-ar-ap list
@@ -35,4 +47,6 @@ protected:
 	const inline bool check_init_();
 	const inline void init_random_();
 	double Vi_1(size_t i);
+	//params are BERP
+	long double thread_safe_likelihood_(double params[4]);
 };

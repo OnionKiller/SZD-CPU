@@ -84,6 +84,63 @@ void imperfect_virtualage_likelihood::set_params_limits(std::vector<double> BERP
 imperfect_virtualage_likelihood::~imperfect_virtualage_likelihood()
 {}
 
+//TODO add execution switch
+long double imperfect_virtualage_likelihood::thread_safe_likelihood_(double params[4])
+{
+	if (!check_init_())
+		throw std::exception("likelihood isn't initialised, add param borders");
+	//implement https://ieeexplore.ieee.org/document/4925834
+	auto Lbeta = params[0];
+	auto Leta = params[1];
+	auto Lar = params[2];
+	auto Lap = params[3];
+	//create all Vi_x w/ info
+	struct Vi {
+		Vi(size_t i, long double v, bool b) :i(i), value(v), is_repair(b) {};
+		size_t i;
+		long double value;
+		bool is_repair = false;
+	};
+	auto f_list = failure_list_.get_failure_list();
+	auto Vi_list = std::vector<Vi>{ Vi(0,0,false) };
+	//V_(i-1)+X_i list
+	auto Vi_1px_list = std::vector<Vi>{};
+	for (size_t i = 0; i < f_list.size(); ++i)
+	{
+		auto is_repair = f_list[i].has_tag(tags::Repair);
+		auto value_with_next = Vi_list.rbegin()->value + f_list[i].get_failure_time();
+		auto value = Vi_list.rbegin()->value + (is_repair ? Lar : Lap) * f_list[i].get_failure_time();
+		Vi_list.push_back(Vi(i, value, is_repair));
+		Vi_1px_list.push_back(Vi(i, value_with_next, is_repair));
+	}
+	//agregate
+	//fist part
+	auto Vi_save = Vi_1px_list;
+	auto pi = std::transform_reduce(/*std::execution::par,*/ Vi_1px_list.begin(), Vi_1px_list.end(), (long double)1., std::multiplies<>(), [&](Vi& A)->long double {
+		if (!A.is_repair)
+			return 1.;
+		long double value = std::powl(A.value, (Lbeta - 1)) * Lbeta / (std::powl(Leta, Lbeta));
+		return value;
+		});
+	auto sum = std::transform_reduce(/*std::execution::par,*/ Vi_save.begin(), Vi_save.end(), Vi_list.begin(), (long double)0, std::plus<>(), [&](Vi& Vix, Vi& Vi)->long double {
+		return std::powl(Vi.value, Lbeta) - std::powl(Vix.value, Lbeta);
+		});
+	auto result = pi * std::expl(1. / std::powl(Ceta, Cbeta) * sum);
+	return result;
+}
+
+imperfect_virtualage_likelihood::th_likelihood imperfect_virtualage_likelihood::get_likelihood_th_safe()
+{
+	auto return_ =  th_likelihood();
+	//BERP
+	return_.params[0] = beta->get_random_variable();
+	return_.params[1] = eta->get_random_variable();
+	return_.params[2] = ar->get_random_variable();
+	return_.params[3] = ap->get_random_variable();
+	return_.L = thread_safe_likelihood_(return_.params);
+	return return_;
+}
+
 inline const bool imperfect_virtualage_likelihood::check_init_()
 {
 	return init && !failure_list_.empty();
