@@ -107,7 +107,7 @@ conditional_likelihood_value<4> imperfect_virtualage_likelihood::get_likelihood(
 		Vi_1px_list.begin(), Vi_1px_list.end(), (long double)1., std::multiplies<>(), [&](Vi& A)->long double {
 			if (!A.is_repair)
 				return 1.;
-			long double value = std::powl(A.value, (I.beta() - 1)) * I.eta() / (std::powl(I.eta(), I.beta()));
+			long double value = std::powl(A.value, (I.beta() - 1)) * I.beta() / (std::powl(I.eta(), I.beta()));
 			return value;
 		});
 	auto sum = std::transform_reduce(/*std::execution::par,*/ 
