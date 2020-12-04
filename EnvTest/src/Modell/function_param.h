@@ -39,7 +39,7 @@ public:
 private:
 	dataType min;
 	dataType max;
-	std::default_random_engine generator;
+	std::random_device generator;
 	distributionType distribution;
 	//FOR FUN ONLY NOT TESTED
 	auto binded_gen()-> decltype(distribution(generator)) { return distribution(generator); };
