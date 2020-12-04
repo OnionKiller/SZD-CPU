@@ -49,7 +49,7 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	//agregate
 	//fist part
 	auto Vi_save = Vi_1px_list;
-	auto pi = std::transform_reduce(/*std::execution::par,*/ Vi_1px_list.begin(), Vi_1px_list.end(),double(0), std::multiplies<>(), [this](Vi& A) {
+	auto pi = std::transform_reduce(/*std::execution::par,*/ Vi_1px_list.begin(), Vi_1px_list.end(),double(1.), std::multiplies<>(), [this](Vi& A) {
 		if (!A.is_repair)
 			return 1.;
 		auto value = std::powl(A.value, (Cbeta - 1)) * Cbeta / (std::powl(Ceta, Cbeta));
