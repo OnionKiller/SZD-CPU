@@ -49,13 +49,13 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	//agregate
 	//fist part
 	auto Vi_save = Vi_1px_list;
-	auto pi = std::transform_reduce(std::execution::par, Vi_1px_list.begin(), Vi_1px_list.end(),double(0), std::multiplies<>(), [this](Vi& A) {
+	auto pi = std::transform_reduce(/*std::execution::par,*/ Vi_1px_list.begin(), Vi_1px_list.end(),double(0), std::multiplies<>(), [this](Vi& A) {
 		if (!A.is_repair)
 			return 1.;
 		auto value = std::powl(A.value, (Cbeta - 1)) * Cbeta / (std::powl(Ceta, Cbeta));
 		return double(value);
 		});
-	auto sum = std::transform_reduce(std::execution::par, Vi_save.begin(), Vi_save.end(), Vi_list.begin(), double(0), std::plus<>(), [this](Vi& Vix, Vi& Vi) {
+	auto sum = std::transform_reduce(/*std::execution::par,*/ Vi_save.begin(), Vi_save.end(), Vi_list.begin(), double(0), std::plus<>(), [this](Vi& Vix, Vi& Vi) {
 		return std::powl(Vi.value, Cbeta) - std::powl(Vix.value, Cbeta);
 		});
 	auto result = pi * std::expl(1. / std::powl(Ceta, Cbeta) * sum);
@@ -66,10 +66,10 @@ void imperfect_virtualage_likelihood::set_params_limits(std::vector<double> BERP
 {
 	if (BERP_list.size() != 8)
 		throw std::exception("BERP size is wrong");
-	this->beta = std::make_unique<function_param<double>>(BERP_list[0], BERP_list[1]);
-	this->eta  = std::make_unique<function_param<double>>(BERP_list[2], BERP_list[3]);
-	this->ar   = std::make_unique<function_param<double>>(BERP_list[4], BERP_list[5]);
-	this->ap   = std::make_unique<function_param<double>>(BERP_list[6], BERP_list[7]);
+	this->beta = std::make_shared<function_param<double>>(BERP_list[0], BERP_list[1]);
+	this->eta  = std::make_shared<function_param<double>>(BERP_list[2], BERP_list[3]);
+	this->ar   = std::make_shared<function_param<double>>(BERP_list[4], BERP_list[5]);
+	this->ap   = std::make_shared<function_param<double>>(BERP_list[6], BERP_list[7]);
 	last_values_.resize(4);
 	init_random_();
 	init = true;
