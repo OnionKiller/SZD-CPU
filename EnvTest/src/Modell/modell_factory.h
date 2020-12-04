@@ -7,9 +7,33 @@
 #include "likelihood.h"
 #include <memory>
 
-//TODO templete overhaul
-//TODO memory overhaul
-class imperfect_virtualage_likelihood : public likelihood
+// TODO lear up implementation with helper functions
+struct imperfect_virtualage_likelihood_conditional_value : conditional_likelihood_value<4>
+{
+	//BEARP
+	//getter
+	double beta();
+	//setter, @return setted value
+	double beta(double beta);
+	//getter
+	double eta();
+	//setter, @return setted value
+	double eta(double eta);
+	//getter
+	double ar();
+	//setter, @return setted value
+	double ar(double ar);
+	//getter
+	double ap();
+	//setter, @return setted value
+	double ap(double ap);
+};
+
+typedef imperfect_virtualage_likelihood_conditional_value imp_vage_cvalue;
+
+
+//TODO template overhaul
+class imperfect_virtualage_likelihood : public likelihood<4>
 {
 public:
 	imperfect_virtualage_likelihood() = default;
@@ -18,35 +42,20 @@ public:
 	/*calculate likelihood
 	* not thread safe way to calculate likelihood
 	* */
-	virtual double get_likelihood() override;
-	/*calculate likelihood in a thread safe fashion
-	* helper return type
-	*/
-	struct th_likelihood{
-		long double L = 0;
-		double params[4];
-	};
-	/*calculate likelihood in a thread safe fashion
-	*/
-	virtual th_likelihood get_likelihood_th_safe();
+	virtual conditional_likelihood_value<4> get_likelihood(bool parralell = false) override;
 	/*set parameter limits to initialise
 	* lower limit first, higher limit second all time, 
 	* beta-eta-ar-ap list
 	*/
 	void set_params_limits(std::vector<double> BERP_list);
-	//release param pointers
-	virtual ~imperfect_virtualage_likelihood();
 protected:
 	simple_failure_times failure_list_;
 	std::shared_ptr<function_param<double>> beta;
 	std::shared_ptr<function_param<double>> eta;
 	std::shared_ptr<function_param<double>> ar ;
 	std::shared_ptr<function_param<double>> ap ;
-	double Cbeta = 0, Ceta = 0, Car = 0, Cap = 0;
 	bool init = false;
 	const inline bool check_init_();
-	const inline void init_random_();
-	double Vi_1(size_t i);
-	//params are BERP
-	long double thread_safe_likelihood_(double params[4]);
+	const inline imp_vage_cvalue init_random_();
+	double Vi_1(size_t i, double ar, double ap);
 };

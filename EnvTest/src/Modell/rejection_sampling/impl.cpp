@@ -26,7 +26,7 @@ std::vector<double> rejection_sampler::solve(simulation_params param)
 	raw_result_ = std::vector<sample_result>(i);
 	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [this](sample_result& result) {
 		result.accepted = false;
-		auto rr = L_.get_likelihood_th_safe();
+		auto rr = L_.get_likelihood();
 		result.L = rr.L;
 		result.params = { rr.params[0],rr.params[1], rr.params[2], rr.params[3] };
 		});
