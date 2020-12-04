@@ -23,14 +23,13 @@ std::vector<double> rejection_sampler::solve(simulation_params param)
 	auto i = param.sample_size;
 	L_.set_data(failures_);
 	//sample
-	for (; i-- > 0;)
-	{
-		sample_result tmp_;
-		tmp_.accepted = false;
-		tmp_.L = L_.get_likelihood();
-		tmp_.params = L_.get_params();
-		raw_result_.push_back(tmp_);
-	}
+	raw_result_ = std::vector<sample_result>(i);
+	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [this](sample_result& result) {
+		result.accepted = false;
+		auto rr = L_.get_likelihood_th_safe();
+		result.L = rr.L;
+		result.params = { rr.params[0],rr.params[1], rr.params[2], rr.params[3] };
+		});
 	//get g(x) as const
 	double L_max = std::max_element(std::execution::par,raw_result_.begin(), raw_result_.end(), [](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
 	//rejection sampling
