@@ -3,6 +3,7 @@
 #pragma once
 #include <vector>
 #include "../Data/data.h"
+#include <string>
 
 //TODO template overhaul
 //TODO params overhaul
@@ -26,4 +27,5 @@ public:
 	virtual ~likelihood() = default;
 	virtual void add_data(failure_times failure_list) = delete;
 	virtual conditional_likelihood_value<paramNumber> get_likelihood(bool parralell = true) = 0;
+	virtual std::string print() { return "virtual likelihood\n"; };
 };
