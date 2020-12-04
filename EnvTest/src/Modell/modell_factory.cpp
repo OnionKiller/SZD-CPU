@@ -2,23 +2,6 @@
 #include <iostream>
 #include <cmath>
 
-imperfect_virtualage_likelihood::imperfect_virtualage_likelihood(imperfect_virtualage_likelihood& C)
-{
-	if (C.beta != nullptr)
-		beta = C.beta;
-	if (C.eta != nullptr)
-		eta = C.eta;
-	if (C.ar != nullptr)
-		ar = C.ar;
-	if (C.ap != nullptr)
-		ap = C.ap;
-	failure_list_ = C.failure_list_;
-	Cbeta = C.Cbeta;
-	Ceta = C.Ceta;
-	Car = C.Car;
-	Cap = C.Cap;
-	init = C.init;
-}
 
 void imperfect_virtualage_likelihood::set_data(simple_failure_times failure_list)
 {
@@ -83,26 +66,17 @@ void imperfect_virtualage_likelihood::set_params_limits(std::vector<double> BERP
 {
 	if (BERP_list.size() != 8)
 		throw std::exception("BERP size is wrong");
-	this->beta = new function_param(BERP_list[0], BERP_list[1]);
-	this->eta = new function_param(BERP_list[2], BERP_list[3]);
-	this->ar = new function_param(BERP_list[4], BERP_list[5]);
-	this->ap = new function_param(BERP_list[6], BERP_list[7]);
+	this->beta = std::make_unique<function_param<double>>(BERP_list[0], BERP_list[1]);
+	this->eta  = std::make_unique<function_param<double>>(BERP_list[2], BERP_list[3]);
+	this->ar   = std::make_unique<function_param<double>>(BERP_list[4], BERP_list[5]);
+	this->ap   = std::make_unique<function_param<double>>(BERP_list[6], BERP_list[7]);
 	last_values_.resize(4);
 	init_random_();
 	init = true;
 }
 
 imperfect_virtualage_likelihood::~imperfect_virtualage_likelihood()
-{
-	if (this->beta != nullptr)
-		delete beta;
-	if (this->eta != nullptr)
-		delete eta;
-	if (this->ar != nullptr)
-		delete ar;
-	if (this->ap != nullptr)
-		delete ap;
-}
+{}
 
 inline const bool imperfect_virtualage_likelihood::check_init_()
 {

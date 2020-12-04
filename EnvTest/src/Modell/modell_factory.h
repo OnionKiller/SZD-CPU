@@ -5,6 +5,7 @@
 
 #include "function_param.h"
 #include "likelihood.h"
+#include <memory>
 
 //TODO templete overhaul
 //TODO memory overhaul
@@ -12,7 +13,7 @@ class imperfect_virtualage_likelihood : public likelihood
 {
 public:
 	imperfect_virtualage_likelihood() = default;
-	imperfect_virtualage_likelihood(imperfect_virtualage_likelihood& C);
+	imperfect_virtualage_likelihood(imperfect_virtualage_likelihood&) = default;
 	virtual void set_data(simple_failure_times failure_list);
 	//calculate likelihood
 	virtual double get_likelihood() override;
@@ -25,10 +26,10 @@ public:
 	virtual ~imperfect_virtualage_likelihood();
 protected:
 	simple_failure_times failure_list_;
-	function_param<double>* beta = nullptr;
-	function_param<double>* eta = nullptr;
-	function_param<double>* ar = nullptr;
-	function_param<double>* ap = nullptr;
+	std::unique_ptr<function_param<double>> beta;
+	std::unique_ptr<function_param<double>> eta;
+	std::unique_ptr<function_param<double>> ar ;
+	std::unique_ptr<function_param<double>> ap ;
 	double Cbeta = 0, Ceta = 0, Car = 0, Cap = 0;
 	bool init = false;
 	const inline bool check_init_();
