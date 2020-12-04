@@ -18,8 +18,11 @@ int main()
     rejection_sampler solver;
     solver.setModell(modell);
     solver.setData(failures);
-    params.sample_size = 1000000;
+    auto begin = std::chrono::steady_clock::now();
+    params.sample_size = 10000000;
     auto result = solver.solve(params);
-    std::cout << "Done!\n";
+    auto end = std::chrono::steady_clock::now();
+    auto est_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+    std::cout << "Done in " << est_time << "seconds !" << std::endl;
     std::cout << "Estimeted params are: \nBeta : " << result[0] << "\nEta  : " << result[1] << "\nAr   : " << result[2] << "\nAp   : " << result[3] << std::endl;
 }
