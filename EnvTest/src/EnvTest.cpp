@@ -18,7 +18,7 @@ int main()
     rejection_sampler solver;
     solver.setModell(modell);
     solver.setData(failures);
-    params.sample_size = 100;
+    params.sample_size = 1000000;
     auto result = solver.solve(params);
     std::cout << "Done!\n";
     std::cout << "Estimeted params are: \nBeta : " << result[0] << "\nEta  : " << result[1] << "\nAr   : " << result[2] << "\nAp   : " << result[3] << std::endl;
