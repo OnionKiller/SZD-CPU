@@ -29,9 +29,9 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	init_random_();
 	//create all Vi_x w/ info
 	struct Vi {
-		Vi(size_t i, double v, bool b) :i(i), value(v), is_repair(b) {};
+		Vi(size_t i, long double v, bool b) :i(i), value(v), is_repair(b) {};
 		size_t i;
-		double value;
+		long double value;
 		bool is_repair = false;
 	};
 	auto f_list = failure_list_.get_failure_list();
@@ -49,15 +49,17 @@ double imperfect_virtualage_likelihood::get_likelihood()
 	//agregate
 	//fist part
 	auto Vi_save = Vi_1px_list;
-	auto pi = std::transform_reduce(/*std::execution::par,*/ Vi_1px_list.begin(), Vi_1px_list.end(),double(1.), std::multiplies<>(), [this](Vi& A) {
+	auto pi = std::transform_reduce(std::execution::par, Vi_1px_list.begin(), Vi_1px_list.end(),(long double)1., std::multiplies<>(), [this](Vi& A)->long double{
 		if (!A.is_repair)
 			return 1.;
-		auto value = std::powl(A.value, (Cbeta - 1)) * Cbeta / (std::powl(Ceta, Cbeta));
-		return double(value);
+		long double value = std::powl(A.value, (Cbeta - 1)) * Cbeta / (std::powl(Ceta, Cbeta));
+		return value;
 		});
-	auto sum = std::transform_reduce(/*std::execution::par,*/ Vi_save.begin(), Vi_save.end(), Vi_list.begin(), double(0), std::plus<>(), [this](Vi& Vix, Vi& Vi) {
+	auto sum = std::transform_reduce(std::execution::par, Vi_save.begin(), Vi_save.end(), Vi_list.begin(), (long double)0, std::plus<>(), [this](Vi& Vix, Vi& Vi)->long double {
 		return std::powl(Vi.value, Cbeta) - std::powl(Vix.value, Cbeta);
 		});
+	//debug print
+	std::cout << pi << "(pi) -- " << sum << "(sum)" << std::endl;
 	auto result = pi * std::expl(1. / std::powl(Ceta, Cbeta) * sum);
 	return result;
 }
