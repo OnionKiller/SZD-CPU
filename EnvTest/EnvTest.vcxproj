@@ -34,6 +34,7 @@
     <ClInclude Include="src\Modell\function_param.h" />
     <ClInclude Include="src\Modell\likelihood.h" />
     <ClInclude Include="src\Modell\modell_factory.h" />
+    <ClInclude Include="src\Modell\rejection_sampling\full_impl.h" />
     <ClInclude Include="src\Modell\rejection_sampling\impl.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

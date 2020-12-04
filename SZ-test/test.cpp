@@ -155,9 +155,9 @@ namespace modell_test {
 		ASSERT_DURATION_LE(10, {
 			auto v = I.get_random_variable();
 			});
-		auto start = std::chrono::steady_clock::now();
+		auto start = std::chrono::high_resolution_clock::now();
 		auto v = I.get_random_variable();
-		auto stop = std::chrono::steady_clock::now();
+		auto stop = std::chrono::high_resolution_clock::now();
 		auto est_time = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
 		std::cerr << est_time << " nanoseconds to generate random value" << std::endl;
 #ifndef _DEBUG
