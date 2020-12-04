@@ -26,10 +26,10 @@ public:
 	virtual ~imperfect_virtualage_likelihood();
 protected:
 	simple_failure_times failure_list_;
-	std::unique_ptr<function_param<double>> beta;
-	std::unique_ptr<function_param<double>> eta;
-	std::unique_ptr<function_param<double>> ar ;
-	std::unique_ptr<function_param<double>> ap ;
+	std::shared_ptr<function_param<double>> beta;
+	std::shared_ptr<function_param<double>> eta;
+	std::shared_ptr<function_param<double>> ar ;
+	std::shared_ptr<function_param<double>> ap ;
 	double Cbeta = 0, Ceta = 0, Car = 0, Cap = 0;
 	bool init = false;
 	const inline bool check_init_();
