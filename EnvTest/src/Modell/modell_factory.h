@@ -27,6 +27,8 @@ struct imperfect_virtualage_likelihood_conditional_value : conditional_likelihoo
 	double ap();
 	//setter, @return setted value
 	double ap(double ap);
+	//print functionality
+	virtual std::string print();
 };
 
 typedef imperfect_virtualage_likelihood_conditional_value imp_vage_cvalue;

@@ -1,6 +1,7 @@
 ﻿#include "modell_factory.h"
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 double imperfect_virtualage_likelihood_conditional_value::beta()
 {
@@ -44,6 +45,13 @@ double imperfect_virtualage_likelihood_conditional_value::ap(double ap)
 {
 	params[3] = ap;
 	return params[3];
+}
+
+std::string imperfect_virtualage_likelihood_conditional_value::print()
+{
+	std::stringstream buffer;
+	buffer << "{ beta=" << beta() << " , eta=" << eta() << " , ap=" << ap() << " , ar=" << ar() << " }";
+	return buffer.str();
 }
 
 void imperfect_virtualage_likelihood::set_data(simple_failure_times failure_list)
@@ -106,8 +114,18 @@ conditional_likelihood_value<4> imperfect_virtualage_likelihood::get_likelihood(
 		Vi_save.begin(), Vi_save.end(), Vi_list.begin(), (long double)0, std::plus<>(), [&](Vi& Vix, Vi& Vi)->long double {
 			return std::powl(Vi.value, I.beta()) - std::powl(Vix.value, I.beta());
 		});
+
 	auto result = pi * std::expl(1. / std::powl(I.eta(), I.beta()) * sum);
 	I.L = result;
+
+
+#ifdef _DEBUG
+	std::stringstream buffer;
+	buffer << "pi: " << pi << " -- sum: " << sum << " -- value:" << result << "-- params:" << I.print() <<  std::endl;
+	if(result > 1)
+		std::cout << buffer.str();
+#endif // _DEBUG
+
 	return conditional_likelihood_value<4>(I);
 }
 
