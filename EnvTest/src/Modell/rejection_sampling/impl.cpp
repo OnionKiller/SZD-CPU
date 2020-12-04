@@ -42,8 +42,8 @@ std::vector<double> rejection_sampler::solve(simulation_params param)
 			A.accepted = false;
 		});
 	//get estimation from result
-
-	return std::vector<double>();
+	auto result = estimate_result_();
+	return result;
 }
 
 std::vector<sample_result> rejection_sampler::get_raw_result()
@@ -51,7 +51,7 @@ std::vector<sample_result> rejection_sampler::get_raw_result()
 	return raw_result_;
 }
 
-std::vector<double> rejection_sampler::estimet_result_()
+std::vector<double> rejection_sampler::estimate_result_()
 {
 	if (raw_result_.empty())
 		throw std::exception("Internal error: raw_result is empty.");
