@@ -18,7 +18,7 @@ void rejection_sampler::setModell(imperfect_virtualage_likelihood modell)
 
 std::vector<double> rejection_sampler::solve(simulation_params param)
 {
-	std::random_device gen;
+	std::default_random_engine gen;
 	auto U = std::bind(std::uniform_real_distribution(0., 1.),gen);
 	auto i = param.sample_size;
 	L_.set_data(failures_);
@@ -73,4 +73,13 @@ std::vector<double> rejection_sampler::estimate_result_()
 		}, [](sample_result& A) {return A.params; });
 	std::for_each(avg.begin(), avg.end(), [accepted_number](double& param) {param = param / double(accepted_number); });
 	return avg;
+}
+
+void rejection_sampler::oversample(const unsigned int rate)
+{
+	for (auto outer_incrementer =  raw_result_.size()-1;outer_incrementer --> 0;)
+	{
+		for (auto i = rate; i-- > 0;)
+			raw_result_.push_back(raw_result_[outer_incrementer]);
+	}
 }

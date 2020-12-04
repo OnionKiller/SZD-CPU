@@ -30,4 +30,5 @@ protected:
 	//implement modell here
 	std::vector<sample_result> raw_result_;
 	std::vector<double> estimate_result_();
+	void oversample(const unsigned int rate);
 };
