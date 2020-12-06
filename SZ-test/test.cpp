@@ -133,13 +133,13 @@ namespace modell_test {
 	{
 		auto I = function_param<int>(0, 1);
 		auto v = I.get_random_variable();
-		ASSERT_TRUE(0 <= v && v < 1) << "Bad value: " << v;
+		ASSERT_TRUE(0 <= v && v <= 1) << "Bad value: " << v;
 	}
 	TEST(function_param, generated)
 	{
 		auto I = function_param<double>(0., 1.);
 		auto v = I.get_random_variable();
-		ASSERT_TRUE(0. <= v && v < 1.) << "Bad value: " << v;
+		ASSERT_TRUE(0. <= v && v <= 1.) << "Bad value: " << v;
 	}
 	TEST(function_param, generate_valuetest)
 	{
@@ -151,19 +151,98 @@ namespace modell_test {
 	}
 	TEST(function_param, generate_perftest)
 	{
+		constexpr int TEST_SAMPLE_SIZE =  100;
 		auto I = function_param<double>(0., 1.);
-		ASSERT_DURATION_LE(10, {
-			auto v = I.get_random_variable();
-			});
+		volatile double v[TEST_SAMPLE_SIZE];
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			v[i] = 0;
 		auto start = std::chrono::high_resolution_clock::now();
-		auto v = I.get_random_variable();
+		{
+			for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+				v[i] = I.get_random_variable();
+		}
 		auto stop = std::chrono::high_resolution_clock::now();
-		auto est_time = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
+		auto est_time = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() / TEST_SAMPLE_SIZE;
 		std::cerr << est_time << " nanoseconds to generate random value" << std::endl;
 #ifndef _DEBUG
-		EXPECT_GT(500,est_time) << "Has running time of "<< est_time << " nanoseconds";
+		EXPECT_GT(100,est_time) << "Has running time of "<< est_time << " nanoseconds";
 #else
 		EXPECT_GT(5000,est_time);
+#endif // !_DEBUG
+	}
+	TEST(function_param, generate_quality)
+	{
+		constexpr int TEST_SAMPLE_SIZE = 100;
+		auto I = function_param<double>(0., 1.);
+		volatile double v[TEST_SAMPLE_SIZE];
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			v[i] = 0;
+		auto start = std::chrono::high_resolution_clock::now();
+		{
+			for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+				v[i] = I.get_random_variable();
+		}
+		int same = 0;
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			for (auto j = i; j-- > 0;)
+				if (v[i] == v[j])
+					same++;
+		EXPECT_EQ(same, 0) << "produced matching random numbers" << same << "times" << std::endl;
+	}
+	TEST(function_param, perf_compare_test)
+	{
+		constexpr int TEST_SAMPLE_SIZE = 100;
+		auto I = function_param_tests<double>(0., 1.);
+		volatile double v[TEST_SAMPLE_SIZE];
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			v[i] = 0;
+		auto start = std::chrono::high_resolution_clock::now();
+		{
+			for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+				v[i] = I.binded_gen0();
+		}
+		auto stop = std::chrono::high_resolution_clock::now();
+		int same = 0;
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			for (auto j = i; j-- > 0;)
+				if (v[i] == v[j])
+					same++;
+		EXPECT_EQ(same, 0) << "produced matching random numbers" << same << "times" << std::endl;
+		auto est_time = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() / TEST_SAMPLE_SIZE;
+		std::cerr << est_time << " nanoseconds to generate random value by bindedgen0" << std::endl;
+		start = std::chrono::high_resolution_clock::now();
+		{
+			for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+				v[i] = I.binded_gen1();
+		}
+		stop = std::chrono::high_resolution_clock::now();
+		same = 0;
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			for (auto j = i; j-- > 0;)
+				if (v[i] == v[j])
+					same++;
+		EXPECT_EQ(same, 0) << "produced matching random numbers" << same << "times" << std::endl;
+		auto est_time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() / TEST_SAMPLE_SIZE;
+		std::cerr << est_time1 << " nanoseconds to generate random value by bindeden1" << std::endl;
+		start = std::chrono::high_resolution_clock::now();
+		{
+			for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+				v[i] = I.binded_gen2();
+		}
+		stop = std::chrono::high_resolution_clock::now();
+		same = 0;
+		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
+			for (auto j = i; j-- > 0;)
+				if (v[i] == v[j])
+					same++;
+		EXPECT_EQ(same, 0) << "produced matching random numbers" << same << "times" << std::endl;
+		auto est_time2 = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() / TEST_SAMPLE_SIZE;
+		std::cerr << est_time1 << " nanoseconds to generate random value by bibndedgen2" << std::endl;
+#ifndef _DEBUG
+		ASSERT_TRUE(est_time >= est_time1) << "Simple_rand has running time of " << est_time1 << " nanoseconds" <<
+			std::endl << "True_rand   has running time of " << est_time << " nanoseconds";
+#else
+		EXPECT_GT(5000, est_time);
 #endif // !_DEBUG
 	}
 }
