@@ -6,6 +6,7 @@
 #include <random>
 #include <functional>
 #include <ranges>
+#include <type_traits>
 
 template< class modellType>
 void rejection_sampler< modellType>::setData(simple_failure_times ftimes)
@@ -16,6 +17,7 @@ void rejection_sampler< modellType>::setData(simple_failure_times ftimes)
 template< class modellType>
 void rejection_sampler< modellType>::setModell(modellType modell)
 {
+	//static_assert(std::is_base_of_v<likelihood<modell.>, modellType>);
 	this->L_ = modellType(modell);
 }
 
@@ -32,7 +34,10 @@ std::vector<double> rejection_sampler<modellType>::solve(simulation_params param
 		result.accepted = false;
 		auto rr = L_.get_likelihood();
 		result.L = rr.L;
-		result.params = { rr.params[0],rr.params[1], rr.params[2], rr.params[3] };
+		result.params = std::vector<double>(rr.param_size);
+		for (auto i = 0; i < rr.param_size; i++)
+			result.params[i] = rr.params[i];
+
 		});
 	//get g(x) as const
 	double L_max = std::max_element(std::execution::par,raw_result_.begin(), raw_result_.end(), [](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;

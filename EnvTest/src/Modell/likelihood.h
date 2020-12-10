@@ -14,6 +14,7 @@ struct conditional_likelihood_value
 {
 	long double L = 0;
 	double params[paramNumber];
+	const size_t param_size = paramNumber;
 protected:
 	virtual inline double get(const size_t i) { return params[i]; };
 	virtual inline const void set(const size_t i, double value) { params[i] = value; };
