@@ -46,7 +46,6 @@ public:
 protected:
 	dataType min;
 	dataType max;
-	unsigned seed;
 	std::default_random_engine generator;
 	distributionType distribution;
 };
