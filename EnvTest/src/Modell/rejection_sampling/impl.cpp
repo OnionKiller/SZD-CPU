@@ -35,13 +35,22 @@ std::vector<double> rejection_sampler<modellType>::solve(simulation_params param
 	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [this](sample_result& result) {
 		result.accepted = false;
 		auto rr = L_.get_likelihood();
-		result.L = rr.L;
+			result.L = rr.L;
 		result.params = std::vector<double>(rr.param_size);
 		for (auto i = 0; i < rr.param_size; i++)
 			result.params[i] = rr.params[i];
 		});
 	//get g(x) as const
-	double L_max = std::max_element(std::execution::par,raw_result_.begin(), raw_result_.end(), [](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
+	double L_max = std::max_element(std::execution::par,raw_result_.begin(), raw_result_.end(), 
+		[](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
+	if (std::isinf(L_max))
+	{
+		raw_result_.erase(std::remove_if(raw_result_.begin(), raw_result_.end(), [](sample_result a) {
+			return std::isinf(sample_result.L);
+			}));
+		L_max = std::max_element(std::execution::par, raw_result_.begin(), raw_result_.end(), 
+			[](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
+	}
 	//rejection sampling
 	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [&U, &L_max](sample_result& A) {
 		auto u = U();
