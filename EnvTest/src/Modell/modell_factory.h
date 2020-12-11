@@ -35,7 +35,7 @@ typedef imperfect_virtualage_likelihood_conditional_value imp_vage_cvalue;
 
 
 //TODO template overhaul
-class imperfect_virtualage_likelihood : public likelihood<4>
+class imperfect_virtualage_likelihood : public likelihood,likelihood_getter_interface<4>
 {
 public:
 	imperfect_virtualage_likelihood() = default;
