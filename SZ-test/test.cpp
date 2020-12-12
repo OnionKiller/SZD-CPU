@@ -151,7 +151,7 @@ namespace modell_test {
 	}
 	TEST(function_param, generate_perftest)
 	{
-		constexpr int TEST_SAMPLE_SIZE =  100;
+		constexpr int TEST_SAMPLE_SIZE =  1000;
 		auto I = function_param<double>(0., 1.);
 		volatile double v[TEST_SAMPLE_SIZE];
 		for (auto i = TEST_SAMPLE_SIZE; i-- > 0;)
@@ -165,7 +165,7 @@ namespace modell_test {
 		auto est_time = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() / TEST_SAMPLE_SIZE;
 		std::cerr << est_time << " nanoseconds to generate random value" << std::endl;
 #ifndef _DEBUG
-		EXPECT_GT(100,est_time) << "Has running time of "<< est_time << " nanoseconds";
+		EXPECT_GT(200,est_time) << "Has running time of "<< est_time << " nanoseconds";
 #else
 		EXPECT_GT(5000,est_time);
 #endif // !_DEBUG
