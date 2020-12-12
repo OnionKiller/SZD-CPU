@@ -32,7 +32,7 @@ std::vector<double> rejection_sampler<modellType>::solve(simulation_params param
 	L_.set_data(failures_);
 	//sample
 	raw_result_ = std::vector<sample_result>(i);
-	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [this](sample_result& result) {
+	std::for_each(/*std::execution::par*/, raw_result_.begin(), raw_result_.end(), [this](sample_result& result) {
 		result.accepted = false;
 		auto rr = L_.get_likelihood();
 			result.L = rr.L;
@@ -41,18 +41,18 @@ std::vector<double> rejection_sampler<modellType>::solve(simulation_params param
 			result.params[i] = rr.params[i];
 		});
 	//get g(x) as const
-	double L_max = std::max_element(std::execution::par,raw_result_.begin(), raw_result_.end(), 
+	double L_max = std::max_element(/*std::execution::par*/,raw_result_.begin(), raw_result_.end(), 
 		[](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
 	if (std::isinf(L_max))
 	{
 		raw_result_.erase(std::remove_if(raw_result_.begin(), raw_result_.end(), [](sample_result a) {
 			return std::isinf(sample_result.L);
 			}));
-		L_max = std::max_element(std::execution::par, raw_result_.begin(), raw_result_.end(), 
+		L_max = std::max_element(/*std::execution::par*/, raw_result_.begin(), raw_result_.end(), 
 			[](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
 	}
 	//rejection sampling
-	std::for_each(std::execution::par, raw_result_.begin(), raw_result_.end(), [&U, &L_max](sample_result& A) {
+	std::for_each(/*std::execution::par*/, raw_result_.begin(), raw_result_.end(), [&U, &L_max](sample_result& A) {
 		auto u = U();
 		if (u < A.L / L_max)
 			A.accepted = true;
@@ -85,7 +85,7 @@ std::vector<double> rejection_sampler< modellType>::estimate_result_()
 			filtered_result_.push_back(I);
 	}
 	auto accepted_number = filtered_result_.size();
-	avg = std::transform_reduce(std::execution::par, filtered_result_.begin(), filtered_result_.end(), avg,
+	avg = std::transform_reduce(/*std::execution::par*/, filtered_result_.begin(), filtered_result_.end(), avg,
 		[](const std::vector<double>& A, const std::vector<double>& B) {
 			auto C = std::vector<double>(A.size(),0);
 			std::transform(A.begin(), A.end(), B.begin(), C.begin(), std::plus<>());
