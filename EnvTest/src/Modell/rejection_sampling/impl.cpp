@@ -46,7 +46,7 @@ std::vector<double> rejection_sampler<modellType>::solve(simulation_params param
 	if (std::isinf(L_max))
 	{
 		raw_result_.erase(std::remove_if(raw_result_.begin(), raw_result_.end(), [](sample_result a) {
-			return std::isinf(sample_result.L);
+			return std::isinf(a.L);
 			}));
 		L_max = std::max_element(/*std::execution::par*/, raw_result_.begin(), raw_result_.end(), 
 			[](const sample_result& A, const sample_result& B) {return A.L < B.L; })->L;
