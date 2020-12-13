@@ -26,7 +26,8 @@ void rejection_sampler< modellType>::setModell(modellType modell)
 template<class modellType>
 std::vector<double> rejection_sampler<modellType>::solve(simulation_params param)
 {
-	std::default_random_engine gen;
+	std::random_device seed;
+	std::default_random_engine gen(seed());
 	auto U = std::bind(std::uniform_real_distribution(0., 1.),gen);
 	auto i = param.sample_size;
 	L_.set_data(failures_);
