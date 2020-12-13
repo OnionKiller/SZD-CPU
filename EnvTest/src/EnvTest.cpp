@@ -20,7 +20,7 @@ int main()
     solver.setData(failures);
     std::cout << "raw_csv"<<std::endl;
     std::cout << "run time in ms,sample size,beta,eta,ar,ap"<<std::endl;
-    for (auto ssize = 10; ssize <= 100000; ssize *= 10) {
+    for (auto ssize = 10; ssize <= 10000000; ssize *= 10) {
         for (auto I = 5; I-- > 0;) {
             auto begin = std::chrono::steady_clock::now();
             params.sample_size = ssize;
