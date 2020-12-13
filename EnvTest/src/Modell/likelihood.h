@@ -40,5 +40,5 @@ public:
 //template<template<size_t>typename modell>
 //constexpr bool check_L_interface()
 //{
-//	static_assert(decltype(modell::get_likelihood));
+//	static_assert(std::invocable_r< /*TODO*/ >::value);
 //}
