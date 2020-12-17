@@ -56,5 +56,8 @@
     <ClInclude Include="src\Modell\rejection_sampling\full_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Data\data_exporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

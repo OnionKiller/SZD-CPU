@@ -6,7 +6,7 @@
 #include "Modell/modell_factory.h"
 #include "Data/init_data.h"
 
-
+#include "Data/data_exporter.h"
 
 int main()
 {
@@ -19,10 +19,12 @@ int main()
     solver.setModell(modell);
     solver.setData(failures);
     auto begin = std::chrono::steady_clock::now();
-    params.sample_size = 1000000;
+    params.sample_size = 100000000;
     auto result = solver.solve(params);
     auto end = std::chrono::steady_clock::now();
     auto est_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
     std::cout << "Done in " << est_time << " seconds !" << std::endl;
     std::cout << "Estimeted params are: \nBeta : " << result[0] << "\nEta  : " << result[1] << "\nAr   : " << result[2] << "\nAp   : " << result[3] << std::endl;
+    std::cout << "Save to file" << std::endl;
+    export_data(solver.get_raw_result(), "all_data.csv");
 }
