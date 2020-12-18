@@ -23,16 +23,16 @@ class rejection_sampler
 public:
 	void setData(simple_failure_times ftimes);
 	void setModell(modellType modell);
-	template<class exec_policy = std::execution::parallel_policy>
 	std::vector<double> solve(simulation_params params);
+	std::vector<double> solve_p(simulation_params params);
 	std::vector<sample_result> get_raw_result();
 protected:
 	simple_failure_times failures_;
 	modellType L_;
 	//implement modell here
 	std::vector<sample_result> raw_result_;
-	template<class exec_policy = std::execution::parallel_policy>
 	std::vector<double> estimate_result_();
+	std::vector<double> estimate_result_p_();
 	void oversample(const unsigned int rate);
 };
 //#include "impl.cpp"
