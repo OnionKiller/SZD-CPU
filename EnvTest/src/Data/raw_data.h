@@ -4,14 +4,18 @@
 #include "data.h"
 
 
-
-namespace pdf04925834
+namespace helper_ 
 {
 	simple_failure F(double value, tags tag) {
 		auto return_ = simple_failure(value);
 		return_.add_tag(tag);
 		return return_;
 	};
+}
+namespace pdf04925834
+{
+	using namespace helper_;
+	//beta=2.2,eta=1,a_r=0.8,a_p=0.3,weibull
 	std::vector<simple_failure> list{
 		 F(1.1873, tags::Preventive),
 		 F(0.3650, tags::Repair),
@@ -113,6 +117,13 @@ namespace pdf04925834
 		 F(0.0004, tags::Repair),
 		 F(0.0628, tags::Repair),
 		 F(0.0550, tags::Preventive)
+	};
+}
+namespace matlab
+{
+	//beta=,eta=,a_r,a_p,weibull 
+	std::vector<simple_failure> list_0{
+
 	};
 }
 
