@@ -23,6 +23,7 @@ int main()
     file << "raw_csv"<<std::endl;
     file << "parralel,run time in ms,sample size,beta,eta,ar,ap"<<std::endl;
     for (auto ssize = 10; ssize <= 10000000; ssize *= 10) {
+        std::cout << "---------------------- do " << ssize << "sample ----------------------" << std::endl;
         for (auto I = 100; I-- > 0;) {
             auto begin = std::chrono::steady_clock::now();
             params.sample_size = ssize;
@@ -36,7 +37,9 @@ int main()
             end = std::chrono::steady_clock::now();
             est_time = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
             file << true << "," << est_time << "," << ssize << "," << result[0] << "," << result[1] << "," << result[2] << "," << result[3] << std::endl;
+            std::cout << '[' <<  I << ']';
         }
+        std::cout << std::endl;
     }
     file.close();
     
