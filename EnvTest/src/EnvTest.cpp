@@ -29,6 +29,6 @@ int main()
     auto est_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
     std::cout << "Done in " << est_time << " seconds !" << std::endl;
     std::cout << "Estimeted params are: \nBeta : " << result[0] << "\nEta  : " << result[1] << "\nAr   : " << result[2] << "\nAp   : " << result[3] << std::endl;
-    std::cout << "Fileba mentés... Ez eltarthat egy ideig." << std::endl;
+    std::cout << "Fileba mentes... Ez eltarthat egy ideig." << std::endl;
     export_data(solver.get_raw_result(), "all_data.csv");
 }
