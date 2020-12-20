@@ -7,6 +7,7 @@
 #include "Data/init_data.h"
 
 #include "Data/data_exporter.h"
+#include <thread>
 
 int main()
 {
@@ -18,8 +19,11 @@ int main()
     rejection_sampler<imperfect_virtualage_likelihood> solver;
     solver.setModell(modell);
     solver.setData(failures);
+    params.sample_size = 10000000;
+    auto p_count = std::thread::hardware_concurrency();
+    std::cout << " Ez a program 16 magon ~80s ideig futott. Ez a gep " << p_count << " maggal rendelkezik, es varhatoan ";
+    std::cout << static_cast<int>(static_cast<double>(p_count) / 16 * 80) << "s alatt fog lefutni." << std::endl;
     auto begin = std::chrono::steady_clock::now();
-    params.sample_size = 100000000;
     auto result = solver.solve(params);
     auto end = std::chrono::steady_clock::now();
     auto est_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
